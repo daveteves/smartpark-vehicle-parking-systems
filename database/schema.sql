@@ -109,8 +109,6 @@ CREATE TABLE EV_Chargers (
     FOREIGN KEY (spot_id) REFERENCES Parking_Spots(spot_id) ON DELETE CASCADE
 );
 
-
-
 --5. Tero, Ma. Rudylin
 CREATE TABLE Reservations (
     reservation_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -123,7 +121,7 @@ CREATE TABLE Reservations (
     FOREIGN KEY (spot_id) REFERENCES Parking_Spots(spot_id) ON DELETE CASCADE
     );
 
-    CREATE TABLE Parking_Sessions (
+CREATE TABLE Parking_Sessions (
         session_id INT AUTO_INCREMENT PRIMARY KEY,
         vehicle_id INT NOT NULL,
         spot_id INT NOT NULL,
