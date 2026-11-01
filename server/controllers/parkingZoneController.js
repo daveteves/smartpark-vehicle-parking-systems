@@ -1,0 +1,6 @@
+const Zone=require('../models/ParkingZone');
+exports.getAll=async(req,res)=>{ try{ const d=await Zone.findAll(); res.status(200).json({success:true,data:d}); }catch(e){ res.status(500).json({success:false,error:e.message}); } };
+exports.getById=async(req,res)=>{ try{ const d=await Zone.findById(req.params.id); if(!d) return res.status(404).json({success:false,message:'Not found'}); res.status(200).json({success:true,data:d}); }catch(e){ res.status(500).json({success:false,error:e.message}); } };
+exports.create=async(req,res)=>{ try{ const id=await Zone.create(req.body); res.status(201).json({success:true,data:{zone_id:id,...req.body}}); }catch(e){ res.status(500).json({success:false,error:e.message}); } };
+exports.update=async(req,res)=>{ try{ const r=await Zone.update(req.params.id,req.body); if(r===0) return res.status(404).json({success:false,message:'Not found'}); res.status(200).json({success:true,message:'Updated'}); }catch(e){ res.status(500).json({success:false,error:e.message}); } };
+exports.delete=async(req,res)=>{ try{ const r=await Zone.delete(req.params.id); if(r===0) return res.status(404).json({success:false,message:'Not found'}); res.status(200).json({success:true,message:'Deleted'}); }catch(e){ res.status(500).json({success:false,error:e.message}); } };

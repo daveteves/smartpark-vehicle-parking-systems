@@ -1,0 +1,7 @@
+const Membership = require('../models/Membership');
+exports.getAll = async (req,res)=>{ try{ const d=await Membership.findAll(); res.status(200).json({success:true,data:d}); }catch(e){ res.status(500).json({success:false,error:e.message}); } };
+exports.getById = async (req,res)=>{ try{ const d=await Membership.findById(req.params.id); if(!d) return res.status(404).json({success:false,message:'Not found'}); res.status(200).json({success:true,data:d}); }catch(e){ res.status(500).json({success:false,error:e.message}); } };
+exports.create = async (req,res)=>{ try{ const id=await Membership.create(req.body); res.status(201).json({success:true,data:{membership_id:id,...req.body}}); }catch(e){ res.status(500).json({success:false,error:e.message}); } };
+exports.update = async (req,res)=>{ try{ const r=await Membership.update(req.params.id,req.body); if(r===0) return res.status(404).json({success:false,message:'Not found'}); res.status(200).json({success:true,message:'Updated'}); }catch(e){ res.status(500).json({success:false,error:e.message}); } };
+exports.delete = async (req,res)=>{ try{ const r=await Membership.delete(req.params.id); if(r===0) return res.status(404).json({success:false,message:'Not found'}); res.status(200).json({success:true,message:'Deleted'}); }catch(e){ res.status(500).json({success:false,error:e.message}); } };
+exports.report = async (req,res)=>{ try{ const r=await Membership.getWithUsers(); res.status(200).json({success:true,data:r}); }catch(e){ res.status(500).json({success:false,error:e.message}); } };
