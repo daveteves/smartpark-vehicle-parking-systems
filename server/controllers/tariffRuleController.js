@@ -1,7 +1,47 @@
-const TariffRule = require('../models/TariffRule');
-exports.getAllTariffRules = async (req, res) => { try { const data = await TariffRule.findAll(); res.status(200).json({ success: true, data }); } catch (e) { res.status(500).json({ success: false, message: 'Server Error', error: e.message }); } };
-exports.getTariffRuleById = async (req, res) => { try { const data = await TariffRule.findById(req.params.id); if (!data) return res.status(404).json({ success: false, message: 'Tariff Rule not found' }); res.status(200).json({ success: true, data }); } catch (e) { res.status(500).json({ success: false, error: e.message }); } };
-exports.createTariffRule = async (req, res) => { try { const id = await TariffRule.create(req.body); res.status(201).json({ success: true, data: { tariff_id: id, ...req.body } }); } catch (e) { res.status(500).json({ success: false, error: e.message }); } };
-exports.updateTariffRule = async (req, res) => { try { const r = await TariffRule.update(req.params.id, req.body); if (r===0) return res.status(404).json({ success: false, message: 'Not found' }); res.status(200).json({ success: true, message: 'Updated' }); } catch (e) { res.status(500).json({ success: false, error: e.message }); } };
-exports.deleteTariffRule = async (req, res) => { try { const r = await TariffRule.delete(req.params.id); if (r===0) return res.status(404).json({ success: false, message: 'Not found' }); res.status(200).json({ success: true, message: 'Deleted' }); } catch (e) { res.status(500).json({ success: false, error: e.message }); } };
-exports.getTariffZoneReport = async (req, res) => { try { const r = await TariffRule.getWithZones(); res.status(200).json({ success: true, data: r }); } catch (e) { res.status(500).json({ success: false, error: e.message }); } };
+const Tariff = require("../models/tariffRuleModel");
+
+const validId = (id) => Number.isInteger(Number(id)) && Number(id) > 0;
+const handleError = (res, err) => {
+  console.error(err);
+  res.status(500).json({ success: false, message: "Database operation failed." });
+};
+
+exports.getAll = (req, res) => {
+  Tariff.getAll((err, results) => {
+    if (err) return handleError(res, err);
+    res.status(200).json({ success: true, data: results });
+  });
+};
+exports.getById = (req, res) => {
+  const id = req.params.id;
+  if (!validId(id)) return res.status(400).json({ message: "Invalid tariff ID." });
+  Tariff.getById(id, (err, results) => {
+    if (err) return handleError(res, err);
+    if (results.length === 0) return res.status(404).json({ message: "Tariff not found." });
+    res.status(200).json({ success: true, data: results[0] });
+  });
+};
+exports.create = (req, res) => {
+  Tariff.create(req.body, (err, result) => {
+    if (err) return handleError(res, err);
+    res.status(201).json({ success: true, data: result });
+  });
+};
+exports.update = (req, res) => {
+  const id = req.params.id;
+  if (!validId(id)) return res.status(400).json({ message: "Invalid tariff ID." });
+  Tariff.update(id, req.body, (err, result) => {
+    if (err) return handleError(res, err);
+    if (result.affectedRows === 0) return res.status(404).json({ message: "Tariff not found." });
+    res.status(200).json({ success: true, data: result });
+  });
+};
+exports.delete = (req, res) => {
+  const id = req.params.id;
+  if (!validId(id)) return res.status(400).json({ message: "Invalid tariff ID." });
+  Tariff.delete(id, (err, result) => {
+    if (err) return handleError(res, err);
+    if (result.affectedRows === 0) return res.status(404).json({ message: "Tariff not found." });
+    res.status(200).json({ success: true, message: "Deleted successfully" });
+  });
+};
