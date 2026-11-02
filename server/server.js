@@ -13,6 +13,8 @@ const promoCodeRoutes = require('./routes/promoCodeRoutes');
 const membershipRoutes = require('./routes/membershipRoutes');
 const parkingZoneRoutes = require('./routes/parkingZoneRoutes');
 const auditLogRoutes = require('./routes/auditLogRoutes');
+const financeRoutes = require('./routes/financeRoutes');
+const reservationRoutes = require('./routes/reservationRoutes');
 
 app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/tariff-rules', tariffRuleRoutes);
@@ -20,6 +22,8 @@ app.use('/api/promo-codes', promoCodeRoutes);
 app.use('/api/memberships', membershipRoutes);
 app.use('/api/parking-zones', parkingZoneRoutes);
 app.use('/api/audit-logs', auditLogRoutes);
+app.use('/api/finance', financeRoutes);
+app.use('/api/reservation', reservationRoutes);
 
 app.get('/', (req, res) => {
     res.status(200).json({ success: true, message: 'Welcome to the SmartPark API' });
