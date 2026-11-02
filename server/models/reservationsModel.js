@@ -40,16 +40,13 @@ const Reservation = {
 
         delete: async(id) => {
             const [result] = await db.query(
-                'DELETE FROM Resrvations WHERE reservation_id = ?,'
+                'DELETE FROM Resrvations WHERE reservation_id = ?',
                 [id]
             );
 
             return result.affectedRows;
 
-
     }
-
-
 };
 
 module.exports = Reservations;
