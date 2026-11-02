@@ -10,7 +10,7 @@ const handleError = (res, err) => {
   });
 };
 
--- Payment
+//Payment
 exports.getPayments = (req, res) => {
   Finance.getPayments((err, results) => {
     if (err) return handleError(res, err);
@@ -125,7 +125,7 @@ exports.deletePayment = (req, res) => {
 };
 
 
--- Violations
+//Violations
 exports.getViolations = (req, res) => {
   Finance.getViolations((err, results) => {
     if (err) return handleError(res, err);
@@ -225,7 +225,7 @@ exports.deleteViolation = (req, res) => {
 };
 
 
--- Charging_Session
+//Charging_Session
 exports.getChargingSessions = (req, res) => {
   Finance.getChargingSessions((err, results) => {
     if (err) return handleError(res, err);

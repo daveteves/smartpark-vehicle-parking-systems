@@ -1,4 +1,4 @@
-const db = require('.../config/db');
+const db = require('../config/db');
 
 const Reservation = {
     getAll: async () => {
@@ -49,4 +49,4 @@ const Reservation = {
     }
 };
 
-module.exports = Reservations;
+module.exports = Reservation;
