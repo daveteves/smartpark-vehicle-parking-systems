@@ -20,6 +20,95 @@ CREATE TABLE Parking_Zones (
     zone_type ENUM('Standard', 'VIP', 'EV', 'Disabled') NOT NULL
 );
 
+--2. Teves, Richie
+CREATE TABLE Tariff_Rules (
+    tariff_id INT AUTO_INCREMENT PRIMARY KEY,
+    vehicle_type ENUM('Car', 'Motorcycle', 'EV') NOT NULL,
+    base_rate DECIMAL(10, 2) NOT NULL,
+    hourly_rate DECIMAL(10, 2) NOT NULL,
+    daily_max DECIMAL(10, 2) NOT NULL,
+    grace_period INT NOT NULL
+);
+
+CREATE TABLE Promo_Codes (
+    promo_id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(20) UNIQUE NOT NULL,
+    discount_percentage DECIMAL(5, 2),
+    discount_amount DECIMAL(10, 2),
+    valid_from DATE NOT NULL,
+    valid_until DATE NOT NULL,
+    usage_limit INT DEFAULT 1,
+    times_used INT DEFAULT 0
+);
+
+CREATE TABLE Vehicles (
+    vehicle_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    license_plate VARCHAR(20) UNIQUE NOT NULL,
+    vehicle_type ENUM('Car', 'Motorcycle', 'EV') NOT NULL,
+    color VARCHAR(30),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+
+--3. Yugto, Kent
+CREATE TABLE Memberships (
+    membership_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    plan_type ENUM('Monthly', 'Quarterly', 'Annual') NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    status ENUM('Active', 'Expired', 'Cancelled') DEFAULT 'Active',
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE Audit_Logs (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    action_type VARCHAR(50) NOT NULL,
+    description TEXT NOT NULL,
+    ip_address VARCHAR(45),
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE SET NULL
+);
+
+CREATE TABLE Parking_Spots (
+    spot_id INT AUTO_INCREMENT PRIMARY KEY,
+    zone_id INT NOT NULL,
+    spot_number VARCHAR(10) NOT NULL,
+    status ENUM('Available', 'Occupied', 'Maintenance') DEFAULT 'Available',
+    FOREIGN KEY (zone_id) REFERENCES Parking_Zones(zone_id) ON DELETE CASCADE,
+    UNIQUE(zone_id, spot_number)
+);
+
+-- 4. Vargas, Anton Johnrhoan
+CREATE TABLE IoT_Devices (
+    device_id INT AUTO_INCREMENT PRIMARY KEY,
+    zone_id INT NOT NULL,
+    device_type ENUM('Camera', 'Boom Barrier', 'Spot Sensor', 'Kiosk') NOT NULL,
+    ip_address VARCHAR(45) UNIQUE,
+    status ENUM('Online', 'Offline', 'Maintenance') DEFAULT 'Online',
+    last_ping TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (zone_id) REFERENCES Parking_Zones(zone_id) ON DELETE CASCADE
+);
+
+CREATE TABLE RFID_Tags (
+    tag_id INT AUTO_INCREMENT PRIMARY KEY,
+    vehicle_id INT NOT NULL,
+    rfid_code VARCHAR(100) UNIQUE NOT NULL,
+    issue_date DATE NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (vehicle_id) REFERENCES Vehicles(vehicle_id) ON DELETE CASCADE
+);
+
+CREATE TABLE EV_Chargers (
+    charger_id INT AUTO_INCREMENT PRIMARY KEY,
+    spot_id INT UNIQUE NOT NULL,
+    charger_type ENUM('Level 1', 'Level 2', 'DC Fast') NOT NULL,
+    power_output_kw DECIMAL(5, 2) NOT NULL,
+    status ENUM('Available', 'In Use', 'Out of Order') DEFAULT 'Available',
+    FOREIGN KEY (spot_id) REFERENCES Parking_Spots(spot_id) ON DELETE CASCADE
+);
+
 --5. Tero, Ma. Rudylin
 CREATE TABLE Reservations (
     reservation_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -32,7 +121,7 @@ CREATE TABLE Reservations (
     FOREIGN KEY (spot_id) REFERENCES Parking_Spots(spot_id) ON DELETE CASCADE
     );
 
-    CREATE TABLE Parking_Sessions (
+CREATE TABLE Parking_Sessions (
         session_id INT AUTO_INCREMENT PRIMARY KEY,
         vehicle_id INT NOT NULL,
         spot_id INT NOT NULL,
@@ -78,3 +167,4 @@ CREATE TABLE Charging_Sessions (
     FOREIGN KEY (session_id) REFERENCES Parking_Sessions(session_id) ON DELETE CASCADE,
     FOREIGN KEY (charger_id) REFERENCES EV_Chargers(charger_id) ON DELETE CASCADE
 );
+
