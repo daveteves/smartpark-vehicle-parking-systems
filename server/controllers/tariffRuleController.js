@@ -1,4 +1,4 @@
-const Tariff = require("../models/tariffRuleModel");
+const Tariff = require("../models/TariffRule");
 
 const validId = (id) => Number.isInteger(Number(id)) && Number(id) > 0;
 const handleError = (res, err) => {

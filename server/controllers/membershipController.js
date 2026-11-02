@@ -1,4 +1,4 @@
-const Membership = require("../models/membershipModel");
+const Membership = require("../models/Membership");
 const validId = (id) => Number.isInteger(Number(id)) && Number(id) > 0;
 const handleError = (res, err) => {
   console.error(err);
