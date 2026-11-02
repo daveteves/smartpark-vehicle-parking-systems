@@ -1,3 +1,11 @@
-const express = require('express'); const router = express.Router(); const c = require('../controllers/promoCodeController');
-router.get('/', c.getAllPromoCodes); router.get('/:id', c.getPromoCodeById); router.post('/', c.createPromoCode); router.put('/:id', c.updatePromoCode); router.delete('/:id', c.deletePromoCode);
+const express = require('express');
+const router = express.Router();
+const c = require('../controllers/promoCodeController');
+
+router.get('/', c.getAll);
+router.get('/:id', c.getById);
+router.post('/', c.create);
+router.put('/:id', c.update);
+router.delete('/:id', c.delete);
+
 module.exports = router;

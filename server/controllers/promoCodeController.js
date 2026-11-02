@@ -1,6 +1,45 @@
-const PromoCode = require('../models/PromoCode');
-exports.getAllPromoCodes = async (req, res) => { try { const d = await PromoCode.findAll(); res.status(200).json({ success: true, data: d }); } catch (e) { res.status(500).json({ success: false, error: e.message }); } };
-exports.getPromoCodeById = async (req, res) => { try { const d = await PromoCode.findById(req.params.id); if (!d) return res.status(404).json({ success: false, message: 'Not found' }); res.status(200).json({ success: true, data: d }); } catch (e) { res.status(500).json({ success: false, error: e.message }); } };
-exports.createPromoCode = async (req, res) => { try { const id = await PromoCode.create(req.body); res.status(201).json({ success: true, data: { promo_id: id, ...req.body } }); } catch (e) { res.status(500).json({ success: false, error: e.message }); } };
-exports.updatePromoCode = async (req, res) => { try { const r = await PromoCode.update(req.params.id, req.body); if (r===0) return res.status(404).json({ success: false, message: 'Not found' }); res.status(200).json({ success: true, message: 'Updated' }); } catch (e) { res.status(500).json({ success: false, error: e.message }); } };
-exports.deletePromoCode = async (req, res) => { try { const r = await PromoCode.delete(req.params.id); if (r===0) return res.status(404).json({ success: false, message: 'Not found' }); res.status(200).json({ success: true, message: 'Deleted' }); } catch (e) { res.status(500).json({ success: false, error: e.message }); } };
+const Promo = require("../models/promoCodeModel");
+const validId = (id) => Number.isInteger(Number(id)) && Number(id) > 0;
+const handleError = (res, err) => {
+  console.error(err);
+  res.status(500).json({ success: false, message: "Database operation failed." });
+};
+exports.getAll = (req, res) => {
+  Promo.getAll((err, results) => {
+    if (err) return handleError(res, err);
+    res.status(200).json({ success: true, data: results });
+  });
+};
+exports.getById = (req, res) => {
+  const id = req.params.id;
+  if (!validId(id)) return res.status(400).json({ message: "Invalid promo code ID." });
+  Promo.getById(id, (err, results) => {
+    if (err) return handleError(res, err);
+    if (results.length === 0) return res.status(404).json({ message: "Promo code not found." });
+    res.status(200).json({ success: true, data: results[0] });
+  });
+};
+exports.create = (req, res) => {
+  Promo.create(req.body, (err, result) => {
+    if (err) return handleError(res, err);
+    res.status(201).json({ success: true, data: result });
+  });
+};
+exports.update = (req, res) => {
+  const id = req.params.id;
+  if (!validId(id)) return res.status(400).json({ message: "Invalid promo code ID." });
+  Promo.update(id, req.body, (err, result) => {
+    if (err) return handleError(res, err);
+    if (result.affectedRows === 0) return res.status(404).json({ message: "Promo code not found." });
+    res.status(200).json({ success: true, data: result });
+  });
+};
+exports.delete = (req, res) => {
+  const id = req.params.id;
+  if (!validId(id)) return res.status(400).json({ message: "Invalid promo code ID." });
+  Promo.delete(id, (err, result) => {
+    if (err) return handleError(res, err);
+    if (result.affectedRows === 0) return res.status(404).json({ message: "Promo code not found." });
+    res.status(200).json({ success: true, message: "Deleted successfully" });
+  });
+};

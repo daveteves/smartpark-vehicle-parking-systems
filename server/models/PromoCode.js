@@ -1,9 +1,30 @@
-const db = require('../config/db');
-class PromoCode {
-  static async findAll() { const [rows] = await db.execute('SELECT * FROM Promo_Codes'); return rows; }
-  static async findById(id) { const [rows] = await db.execute('SELECT * FROM Promo_Codes WHERE promo_id = ?', [id]); return rows[0]; }
-  static async create(data) { const k=Object.keys(data); const v=Object.values(data); const [r]=await db.execute(`INSERT INTO Promo_Codes (${k.join(', ')}) VALUES (${k.map(()=> '?').join(', ')})`, v); return r.insertId; }
-  static async update(id,data){ const k=Object.keys(data); const v=Object.values(data); const [r]=await db.execute(`UPDATE Promo_Codes SET ${k.map(x=>`${x}=?`).join(', ')} WHERE promo_id=?`, [...v,id]); return r.affectedRows; }
-  static async delete(id){ const [r]=await db.execute('DELETE FROM Promo_Codes WHERE promo_id=?',[id]); return r.affectedRows; }
-}
+const pool = require('../config/db');
+
+const PromoCode = {
+  async getAll() {
+    const [rows] = await pool.query('SELECT * FROM promo_codes');
+    return rows;
+  },
+
+  async getById(id) {
+    const [rows] = await pool.query('SELECT * FROM promo_codes WHERE id = ?', [id]);
+    return rows[0];
+  },
+
+  async create(data) {
+    const [result] = await pool.query('INSERT INTO promo_codes SET ?', data);
+    return { id: result.insertId, ...data };
+  },
+
+  async update(id, data) {
+    await pool.query('UPDATE promo_codes SET ? WHERE id = ?', [data, id]);
+    return { id, ...data };
+  },
+
+  async delete(id) {
+    await pool.query('DELETE FROM promo_codes WHERE id = ?', [id]);
+    return { id };
+  }
+};
+
 module.exports = PromoCode;
