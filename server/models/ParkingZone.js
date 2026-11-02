@@ -1,9 +1,30 @@
-const db = require('../config/db');
-class ParkingZone {
-  static async findAll() { const [rows] = await db.execute('SELECT * FROM Parking_Zones'); return rows; }
-  static async findById(id) { const [rows] = await db.execute('SELECT * FROM Parking_Zones WHERE zone_id = ?', [id]); return rows[0]; }
-  static async create(data) { const k=Object.keys(data); const v=Object.values(data); const [r]=await db.execute(`INSERT INTO Parking_Zones (${k.join(', ')}) VALUES (${k.map(()=> '?').join(', ')})`, v); return r.insertId; }
-  static async update(id,data){ const k=Object.keys(data); const v=Object.values(data); const [r]=await db.execute(`UPDATE Parking_Zones SET ${k.map(x=>`${x}=?`).join(', ')} WHERE zone_id=?`, [...v,id]); return r.affectedRows; }
-  static async delete(id){ const [r]=await db.execute('DELETE FROM Parking_Zones WHERE zone_id=?',[id]); return r.affectedRows; }
-}
+const pool = require('../config/db');
+
+const ParkingZone = {
+  async getAll() {
+    const [rows] = await pool.query('SELECT * FROM parking_zones');
+    return rows;
+  },
+
+  async getById(id) {
+    const [rows] = await pool.query('SELECT * FROM parking_zones WHERE id = ?', [id]);
+    return rows[0];
+  },
+
+  async create(data) {
+    const [result] = await pool.query('INSERT INTO parking_zones SET ?', data);
+    return { id: result.insertId, ...data };
+  },
+
+  async update(id, data) {
+    await pool.query('UPDATE parking_zones SET ? WHERE id = ?', [data, id]);
+    return { id, ...data };
+  },
+
+  async delete(id) {
+    await pool.query('DELETE FROM parking_zones WHERE id = ?', [id]);
+    return { id };
+  }
+};
+
 module.exports = ParkingZone;
