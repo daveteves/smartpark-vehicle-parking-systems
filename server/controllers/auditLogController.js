@@ -1,4 +1,4 @@
-const Audit = require("../models/auditLogModel");
+const Audit = require("../models/AuditLog");
 
 const validId = (id) => Number.isInteger(Number(id)) && Number(id) > 0;
 

@@ -1,4 +1,4 @@
-const Promo = require("../models/promoCodeModel");
+const Promo = require("../models/PromoCode");
 const validId = (id) => Number.isInteger(Number(id)) && Number(id) > 0;
 const handleError = (res, err) => {
   console.error(err);

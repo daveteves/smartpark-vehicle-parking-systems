@@ -1,26 +1,24 @@
-const db = require('.../config/db');
+const db = require('../config/db');
 
-const Parking_Sessions = {
+const ParkingSessions = {
     getAll: async () => {
-        const [rows] = await db.query(
-            'SELECT*FROM Parking_Sessions'
-        );
+        const [rows] = await db.query('SELECT * FROM Parking_Sessions');
         return rows;
     },
 
-    getByld: async (id) => {
+    getById: async (id) => {
         const [rows] = await db.query(
-            'SELECT*FROM Parking_Sessions WHERE session_id = ?',
+            'SELECT * FROM Parking_Sessions WHERE session_id = ?',
             [id]
         );
         return rows[0];
     },
 
     create: async (data) => {
-        const {vehicle_id, spot_id, entry_timestamp} = data;
+        const { vehicle_id, spot_id, entry_timestamp } = data;
 
         const [result] = await db.query(
-            'INSERT INTO Parking_Sessions (vehicle_id, spot_id, entry_timestamp ) VALUES (?, ?, ?, ?)',
+            'INSERT INTO Parking_Sessions (vehicle_id, spot_id, entry_timestamp) VALUES (?, ?, ?)',
             [vehicle_id, spot_id, entry_timestamp]
         );
 
@@ -33,18 +31,18 @@ const Parking_Sessions = {
             [exit_timestamp, id]
         );
 
-        return result.affectedRows
+        return result.affectedRows > 0;
     },
 
     update: async (id, data) => {
-        const {vehicle_id, spot_id, entry_timestamp, status} = data;
+        const { vehicle_id, spot_id, entry_timestamp, exit_timestamp, status } = data;
 
         const [result] = await db.query(
             'UPDATE Parking_Sessions SET vehicle_id = ?, spot_id = ?, entry_timestamp = ?, exit_timestamp = ?, status = ? WHERE session_id = ?',
             [vehicle_id, spot_id, entry_timestamp, exit_timestamp, status, id]
         );
 
-        return result.affectedRows;
+        return result.affectedRows > 0;
     },
 
     delete: async (id) => {
@@ -52,7 +50,9 @@ const Parking_Sessions = {
             'DELETE FROM Parking_Sessions WHERE session_id = ?',
             [id]
         );
+
+        return result.affectedRows > 0;
     }
 };
 
-module.exports = Parking_Sessions;
+module.exports = ParkingSessions;

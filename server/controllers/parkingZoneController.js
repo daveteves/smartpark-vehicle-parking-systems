@@ -1,4 +1,4 @@
-const ParkingZone = require("../models/parkingZoneModel");
+const ParkingZone = require("../models/ParkingZone");
 
 const validId = (id) => Number.isInteger(Number(id)) && Number(id) > 0;
 
